@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns#">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="動画や画像を画面内にぺたぺた貼ることで、たくさんのデータを同時に視聴するためのアプリです。">
+    <title>ぺたぺた</title>
+    <meta property="og:title" content="ぺたぺた">
+    <meta property="og:site_name" content="ぺたぺた">
+    <meta property="og:description" content="動画や画像を画面内にぺたぺた貼ることで、たくさんのデータを同時に視聴するためのアプリです。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://marmooo.github.io/petapeta/">
+    <meta property="og:image" content="https://marmooo.github.io/petapeta/favicon/apple-touch-icon.png">
+    <meta name="twitter:card" content="summary">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F2179JXDYY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-F2179JXDYY');
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/petapeta/sw.js');
+        });
+      }
+    </script>
+    <link rel="icon" type="image/png" href="/petapeta/favicon/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/petapeta/favicon/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/petapeta/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/petapeta/favicon/site.webmanifest">
+    <link class="drop-inline-css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <style>
+      #dragPanel { min-height:100vh; }
+      #dragPanel img, video {
+        vertical-align: top;
+      }
+      .sortable-box { display:inline-block; position:relative; }
+      .sortable-box:hover .sortable {
+        display: block;
+      }
+      .sortable-box:hover .close {
+        display: block;
+      }
+      .sortable {
+        background: transparent;
+        border: 0;
+        position: absolute;
+        top: 10px;
+        right: 51px;
+        display: none;
+        border-radius: 18px;
+        line-height: 1;
+        padding: 6px;
+        cursor: pointer;
+      }
+      .sortable:hover {
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .close {
+        background: transparent;
+        border: 0;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: none;
+        border-radius: 18px;
+        line-height: 1;
+        padding: 6px;
+        cursor: pointer;
+      }
+      .close:hover {
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .resizable:hover {
+        box-sizing: border-box;
+        background-color: black;
+        border-color: darkblue;
+        border: 4px solid transparent;
+      }
+      html[data-bs-theme="dark"] .favicon { filter: invert(1) hue-rotate(180deg); }
+    </style>
+  </head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+      <symbol id="icon-draggable" viewBox="0 -960 960 960">
+      <path d="M450-450H198l62 62q9 9.13 9 22.07 0 12.93-9.1 21.93-9.11 9-22 9-12.9 0-21.9-9L101-459q-5-5-7-10.13-2-5.14-2-11Q92-486 94-491q2-5 7-10l116-116q9.33-9 22.17-9 12.83 0 21.83 9 9 9 9 21.83 0 12.84-9 22.17l-63 63h252v-252l-62 62q-9 9-22 9t-22-9q-9-9-9-21.83 0-12.84 9-22.17l115-115q5-5 10.13-7 5.14-2 11-2 5.87 0 10.87 2 5 2 10 7l115 115q9 9 9 22t-9 22q-9 9-21.83 9-12.84 0-22.17-9l-62-62v252h252l-62-62q-9-9.13-9-22.07 0-12.93 9.1-21.93 9.11-9 22-9 12.9 0 21.9 9l115 115q5 5 7 10.13 2 5.14 2 11 0 5.87-2 10.87-2 5-7 10L744-344q-9 9-22 9t-22-9q-9-9-9-21.83 0-12.84 9-22.17l62-62H510v252l67-67q9.13-9 22.07-9 12.93 0 21.93 9.1 9 9.11 9 22 0 12.9-9 21.9L501-101q-5 5-10.13 7-5.14 2-11 2Q474-92 469-94q-5-2-10-7L339-221q-9-9-9-22t9-22q9-9 21.83-9 12.84 0 22.17 9l67 67v-252Z"></path>
+      </symbol>
+      <symbol id="icon-close" viewBox="0 -960 960 960">
+      <path d="M480-438 270-228q-9 9-21 9t-21-9q-9-9-9-21t9-21l210-210-210-210q-9-9-9-21t9-21q9-9 21-9t21 9l210 210 210-210q9-9 21-9t21 9q9 9 9 21t-9 21L522-480l210 210q9 9 9 21t-9 21q-9 9-21 9t-21-9L480-438Z"></path>
+      </symbol>
+    </svg>
+    <header>
+      <nav class="navbar navbar-expand">
+        <div class="container flex-wrap">
+          <a class="navbar-brand" href="/petapeta/">
+            <img class="favicon" alt="" src="/petapeta/favicon/favicon.svg" width="32" height="32">
+            ぺたぺた
+          </a>
+          <div class="navbar-nav">
+            <button title="自由配置" class="btn p-0" type="button">
+              <svg id="freeOn" class="d-none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="M820-368v-324H244v-188h636v512h-60ZM80-80v-552h680v552H80Z"></path>
+              </svg>
+              <svg id="freeOff" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="M140-140h516v-392H140v392Zm576-228v-60h104v-392H304v228h-60v-288h636v512H716ZM80-80v-512h636v512H80Zm482-617ZM398-336Z"></path>
+              </svg>
+            </button>
+            <button title="ダッシュボード" class="btn p-0 ms-1" type="button">
+              <svg id="dashboardOn" class="d-none" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="M570-160v-290h310v290H570ZM450-510v-290h430v290H450ZM80-160v-290h430v290H80Zm0-350v-290h310v290H80Z"></path>
+              </svg>
+              <svg id="dashboardOff" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="M570-160v-290h310v290H570ZM450-510v-290h430v290H450ZM80-160v-290h430v290H80Zm0-350v-290h310v290H80Zm430-60h310v-170H510v170ZM140-220h310v-170H140v170Zm490 0h190v-170H630v170ZM140-570h190v-170H140v170Zm370 0Zm-60 180Zm180 0ZM330-570Z"></path>
+              </svg>
+            </button>
+            <button title="グリッド" class="btn p-0 ms-1" type="button">
+              <svg id="gridOff" class="d-none" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"></path>
+              </svg>
+              <svg id="gridOn" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
+                <path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510Z"></path>
+              </svg>
+            </button>
+            <button title="ダークモード切替" id="toggleDarkMode" class="fs-4 btn p-0 ms-1" type="button">🌓</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main class="container-fluid text-center">
+      <noscript>
+        <div class="alert alert-warning">JavaScript を ON にしてください</div>
+      </noscript>
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        動画・画像ファイルをドラッグ &amp; ドロップしてください。
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div id="dragPanel" class="bg-light-subtle">
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455347-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455347-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455343-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455343-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455363-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455363-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455155-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455155-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455188-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455188-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455378-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455378-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455211-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455211-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455282-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455282-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455349-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455349-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455326-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455326-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455167-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455167-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="sortable-box">
+          <video controls width="320" height="180" preload="none" poster="/petapeta/video/455390-320x180.webp" draggable="false">
+            <source src="/petapeta/video/455390-320x180.mp4" type="video/mp4">
+          </video>
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <template id="sortable-box">
+        <div class="sortable-box">
+          <button title="並び替え" class="sortable" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-draggable"></use>
+            </svg>
+          </button>
+          <button title="閉じる" class="close" type="button">
+            <svg width="24" height="24" fill="white">
+              <use href="#icon-close"></use>
+            </svg>
+          </button>
+        </div>
+      </template>
+    </main>
+    <footer class="pt-4 alert text-center">
+      <div>Sample videos
+        / <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a> by
+        <a href="https://mazwai.com/">Mazwai</a>
+      </div>
+      <div class="pt-3">
+        <a class="px-1" href="/">Home</a>
+        <a class="px-1" href="/terms/">Terms</a>
+        <a class="px-1" href="https://github.com/marmooo/petapeta">Contact</a>
+      </div>
+      <div class="text-muted">&copy; <a href="https://github.com/marmooo">marmooo</a></div>
+    </footer>
+    <script type="module" src="/petapeta/index.js"></script>
+  </body>
+</html>
