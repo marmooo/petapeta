@@ -264,26 +264,7 @@ function setModeEvents(div, event) {
   }
 }
 
-const dragPanel = document.getElementById("dragPanel");
-const resizables = [];
-let draggables = [];
-let sortable = new Sortable(dragPanel, { handle: ".sortable" });
-for (const media of dragPanel.querySelectorAll("video,img")) {
-  const resizable = new Resizable(media);
-  media.addEventListener("resizeEnd", resizeAll);
-  resizables.push(resizable);
-}
-for (const closeButton of dragPanel.querySelectorAll(".close")) {
-  closeButton.addEventListener("pointerdown", () => {
-    closeButton.parentNode.remove();
-  });
-}
-
-document.querySelectorAll(".alert").forEach((alert) => {
-  new Alert(alert);
-});
-
-document.getElementById("freeOff").onclick = () => {
+function freeOn() {
   document.getElementById("freeOn").classList.remove("d-none");
   document.getElementById("freeOff").classList.add("d-none");
   document.getElementById("dashboardOn").classList.add("d-none");
@@ -314,8 +295,9 @@ document.getElementById("freeOff").onclick = () => {
     resizable.options.container = resizable.element.parentNode;
     resizable.element.removeEventListener("resizeEnd", resizeAll);
   }
-};
-document.getElementById("dashboardOff").onclick = () => {
+}
+
+function dashboardOn() {
   document.getElementById("freeOn").classList.add("d-none");
   document.getElementById("freeOff").classList.remove("d-none");
   document.getElementById("dashboardOff").classList.add("d-none");
@@ -331,8 +313,9 @@ document.getElementById("dashboardOff").onclick = () => {
     resizable.options.container = null;
     resizable.element.removeEventListener("resizeEnd", resizeAll);
   }
-};
-document.getElementById("gridOff").onclick = () => {
+}
+
+function gridOn() {
   document.getElementById("freeOn").classList.add("d-none");
   document.getElementById("freeOff").classList.remove("d-none");
   document.getElementById("dashboardOn").classList.add("d-none");
@@ -359,7 +342,7 @@ document.getElementById("gridOff").onclick = () => {
     style.width = `${avgWidth}px`;
     style.height = `${avgHeight}px`;
   }
-};
+}
 
 function addFile(file, event) {
   switch (file.type.slice(0, 5)) {
@@ -447,12 +430,33 @@ function addHTML() {
   setModeEvents(div);
 }
 
+const dragPanel = document.getElementById("dragPanel");
+const resizables = [];
+let draggables = [];
+let sortable = new Sortable(dragPanel, { handle: ".sortable" });
+for (const media of dragPanel.querySelectorAll("video,img")) {
+  const resizable = new Resizable(media);
+  media.addEventListener("resizeEnd", resizeAll);
+  resizables.push(resizable);
+}
+for (const closeButton of dragPanel.querySelectorAll(".close")) {
+  closeButton.addEventListener("pointerdown", () => {
+    closeButton.parentNode.remove();
+  });
+}
+
+document.querySelectorAll(".alert").forEach((alert) => {
+  new Alert(alert);
+});
 document.getElementById("addModal").addEventListener("shown.bs.modal", () => {
   document.getElementById("addTextarea").focus();
 });
 
 document.getElementById("toggleDarkMode").onclick = toggleDarkMode;
 document.getElementById("showAddModal").onclick = showAddModal;
+document.getElementById("freeOff").onclick = freeOn;
+document.getElementById("dashboardOff").onclick = dashboardOn;
+document.getElementById("gridOff").onclick = gridOn;
 document.getElementById("addHTML").onclick = addHTML;
 globalThis.ondragover = (event) => {
   event.preventDefault();
