@@ -234,7 +234,7 @@ function getMode() {
 }
 
 function setModeEvents(div, event) {
-  const media = div.querySelector("video,img");
+  const media = div.firstElementChild;
   div.querySelector(".close").addEventListener("pointerdown", () => {
     div.remove();
   });
@@ -244,7 +244,7 @@ function setModeEvents(div, event) {
       resizables.push(resizable);
       const draggable = new Draggable(div);
       draggables.push(draggable);
-      if (event.clientX) {
+      if (event && event.clientX) {
         const style = div.style;
         style.left = `${event.clientX}px`;
         style.top = `${event.clientY}px`;
@@ -429,7 +429,31 @@ function addVideoFile(file, event) {
   setModeEvents(div, event);
 }
 
+function addHTML() {
+  const template = document.getElementById("sortable-box")
+    .content.cloneNode(true);
+  const div = template.firstElementChild;
+  const text = document.getElementById("addTextarea").value;
+  const child = document.createElement("div");
+  if (getMode() === "grid") {
+    const mediaStyle = dragPanel.firstElementChild.firstElementChild.style;
+    const style = child.style;
+    style.width = mediaStyle.width;
+    style.height = mediaStyle.height;
+  }
+  child.innerHTML = text;
+  div.prepend(child);
+  dragPanel.appendChild(div);
+  setModeEvents(div);
+}
+
+document.getElementById("addModal").addEventListener("shown.bs.modal", () => {
+  document.getElementById("addTextarea").focus();
+});
+
 document.getElementById("toggleDarkMode").onclick = toggleDarkMode;
+document.getElementById("showAddModal").onclick = showAddModal;
+document.getElementById("addHTML").onclick = addHTML;
 globalThis.ondragover = (event) => {
   event.preventDefault();
 };
@@ -442,7 +466,6 @@ globalThis.ondrop = (event) => {
 globalThis.addEventListener("paste", (event) => {
   for (const item of event.clipboardData.items) {
     const file = item.getAsFile();
-    console.log(event.clientX);
     addFile(file, event);
   }
 });
