@@ -305,7 +305,7 @@ function dashboardOn() {
   document.getElementById("gridOn").classList.add("d-none");
   document.getElementById("gridOff").classList.remove("d-none");
   if (!sortable) {
-    sortable = new Sortable(dragPanel, { handle: ".sortable" });
+    sortable = new Sortable(dragPanel);
   }
   draggables.forEach((draggable) => draggable.destroy());
   draggables = [];
@@ -323,7 +323,7 @@ function gridOn() {
   document.getElementById("gridOn").classList.remove("d-none");
   document.getElementById("gridOff").classList.add("d-none");
   if (!sortable) {
-    sortable = new Sortable(dragPanel, { handle: ".sortable" });
+    sortable = new Sortable(dragPanel);
   }
   draggables.forEach((draggable) => draggable.destroy());
   draggables = [];
@@ -433,7 +433,7 @@ function addHTML() {
 const dragPanel = document.getElementById("dragPanel");
 const resizables = [];
 let draggables = [];
-let sortable = new Sortable(dragPanel, { handle: ".sortable" });
+let sortable = new Sortable(dragPanel);
 for (const media of dragPanel.querySelectorAll("video,img")) {
   const resizable = new Resizable(media);
   media.addEventListener("resizeEnd", resizeAll);
