@@ -580,6 +580,7 @@ globalThis.ondrop = (event) => {
   }
 };
 globalThis.addEventListener("paste", (event) => {
+  if (event.target.tagName.toLowerCase() === "textarea") return;
   for (const item of event.clipboardData.items) {
     const file = item.getAsFile();
     addFile(file, event);
