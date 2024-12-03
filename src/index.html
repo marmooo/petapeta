@@ -41,8 +41,12 @@
       .sortable-box:hover .sortable {
         display: block;
       }
+      .sortable-box:hover .close:hover {
+        background: rgba(0, 0, 0, .5);
+      }
       .sortable-box:hover .close {
         display: block;
+        background: rgba(0, 0, 0, .25);
       }
       .close {
         background: transparent;
@@ -55,9 +59,6 @@
         line-height: 1;
         padding: 6px;
         cursor: pointer;
-      }
-      .close:hover {
-        background: rgba(0, 0, 0, 0.5);
       }
       .resizable:hover {
         box-sizing: border-box;
