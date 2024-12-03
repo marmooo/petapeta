@@ -1,5 +1,4 @@
 import { Alert } from "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/+esm";
-import { Sortable } from "https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/modular/sortable.core.esm.js";
 
 loadConfig();
 
@@ -16,6 +15,102 @@ function toggleDarkMode() {
   } else {
     localStorage.setItem("darkMode", 1);
     document.documentElement.setAttribute("data-bs-theme", "dark");
+  }
+}
+
+class Sortable {
+  static defaultOptions = {
+    onStart: null,
+    onDrop: null,
+    onEnd: null,
+  };
+
+  constructor(container, options = {}) {
+    this.container = container;
+    this.options = { ...Sortable.defaultOptions, ...options };
+    this.draggedElement = null;
+    this.init();
+  }
+
+  init() {
+    for (const child of this.container.children) {
+      child.setAttribute("draggable", "true");
+    }
+    this.container.addEventListener("dragstart", this.onDragStart);
+    this.container.addEventListener("dragover", this.onDragOver);
+    this.container.addEventListener("drop", this.onDrop);
+    this.container.addEventListener("dragend", this.onDragEnd);
+  }
+
+  onDragStart = (event) => {
+    if (event.target && event.target.parentNode === this.container) {
+      this.draggedElement = event.target;
+      event.dataTransfer.effectAllowed = "move";
+      event.target.classList.add("dragging");
+      if (this.options.onStart) {
+        this.options.onStart(event, this.draggedElement);
+      }
+    }
+  };
+
+  onDragOver = (event) => {
+    event.preventDefault();
+    const target = this.getValidTarget(event.target);
+    if (target && target !== this.draggedElement) {
+      target.classList.add("over");
+    }
+  };
+
+  onDrop = (event) => {
+    event.preventDefault();
+    const target = this.getValidTarget(event.target);
+    if (target && target !== this.draggedElement) {
+      this.swapElements(this.draggedElement, target);
+      if (this.options.onDrop) {
+        this.options.onDrop(event, this.draggedElement, target);
+      }
+    }
+    for (const child of this.container.children) {
+      child.classList.remove("over");
+    }
+  };
+
+  onDragEnd = (event) => {
+    if (this.draggedElement) {
+      this.draggedElement.classList.remove("dragging");
+      this.draggedElement = null;
+      if (this.options.onEnd) {
+        this.options.onEnd(event);
+      }
+    }
+  };
+
+  swapElements(dragged, target) {
+    const draggedSibling = dragged.nextSibling === target
+      ? dragged
+      : dragged.nextSibling;
+    this.container.insertBefore(dragged, target.nextSibling);
+    this.container.insertBefore(target, draggedSibling);
+  }
+
+  getValidTarget(target) {
+    while (target && target !== this.container) {
+      if (target.parentNode === this.container) {
+        return target;
+      }
+      target = target.parentNode;
+    }
+    return null;
+  }
+
+  destroy() {
+    this.container.removeEventListener("dragstart", this.onDragStart);
+    this.container.removeEventListener("dragover", this.onDragOver);
+    this.container.removeEventListener("drop", this.onDrop);
+    this.container.removeEventListener("dragend", this.onDragEnd);
+    for (const child of this.container.children) {
+      child.removeAttribute("draggable");
+    }
   }
 }
 
