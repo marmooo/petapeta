@@ -20,6 +20,7 @@ function toggleDarkMode() {
 
 class Sortable {
   static defaultOptions = {
+    offset: 10,
     onStart: null,
     onDrop: null,
     onEnd: null,
@@ -45,6 +46,10 @@ class Sortable {
   onDragStart = (event) => {
     if (event.target && event.target.parentNode === this.container) {
       this.draggedElement = event.target;
+      if (this.options.offset && this.isInBorder(event)) {
+        event.preventDefault();
+        return;
+      }
       event.dataTransfer.effectAllowed = "move";
       event.target.classList.add("dragging");
       if (this.options.onStart) {
@@ -84,6 +89,18 @@ class Sortable {
       }
     }
   };
+
+  isInBorder(event) {
+    const { offset } = this.options;
+    const rect = this.draggedElement.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    if (x <= offset) return true;
+    if (y <= offset) return true;
+    if (rect.width - x <= offset) return true;
+    if (rect.height - y <= offset) return true;
+    return false;
+  }
 
   swapElements(dragged, target) {
     const draggedSibling = dragged.nextSibling === target
