@@ -480,7 +480,8 @@ function addImageFile(file, event) {
     img.setAttribute("draggable", "false");
     const maxWidth = dragPanel.offsetWidth / 2;
     if (getMode() === "grid") {
-      const mediaStyle = dragPanel.firstElementChild.firstElementChild.style;
+      const media = dragPanel.firstElementChild.firstElementChild;
+      const mediaStyle = getComputedStyle(media);
       const style = img.style;
       style.width = mediaStyle.width;
       style.height = mediaStyle.height;
@@ -510,7 +511,8 @@ function addVideoFile(file, event) {
     video.setAttribute("draggable", "false");
     const maxWidth = dragPanel.offsetWidth / 2;
     if (getMode() === "grid") {
-      const mediaStyle = dragPanel.firstElementChild.firstElementChild.style;
+      const media = dragPanel.firstElementChild.firstElementChild;
+      const mediaStyle = getComputedStyle(media);
       const style = video.style;
       style.width = mediaStyle.width;
       style.height = mediaStyle.height;
