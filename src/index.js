@@ -1,4 +1,7 @@
-import { Alert } from "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/+esm";
+import {
+  Alert,
+  Modal,
+} from "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/+esm";
 
 loadConfig();
 
@@ -540,6 +543,10 @@ function addHTML() {
   div.prepend(child);
   dragPanel.appendChild(div);
   setModeEvents(div);
+}
+
+function showAddModal() {
+  new Modal("#addModal").show();
 }
 
 const dragPanel = document.getElementById("dragPanel");
