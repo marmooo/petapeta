@@ -532,15 +532,20 @@ function addHTML() {
     .content.cloneNode(true);
   const div = template.firstElementChild;
   const text = document.getElementById("addTextarea").value;
-  const child = document.createElement("div");
+  const container = document.createElement("div");
+  container.innerHTML = text;
+  if (container.children.length === 1) {
+    div.prepend(container.firstElementChild);
+  } else {
+    div.prepend(container);
+  }
   if (getMode() === "grid") {
-    const mediaStyle = dragPanel.firstElementChild.firstElementChild.style;
-    const style = child.style;
+    const media = dragPanel.firstElementChild.firstElementChild;
+    const mediaStyle = getComputedStyle(media);
+    const style = div.firstElementChild.style;
     style.width = mediaStyle.width;
     style.height = mediaStyle.height;
   }
-  child.innerHTML = text;
-  div.prepend(child);
   dragPanel.appendChild(div);
   setModeEvents(div);
 }
