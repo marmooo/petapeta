@@ -336,7 +336,8 @@ class Draggable {
 
 function resizeAll(event) {
   const { offsetWidth, offsetHeight } = event.currentTarget;
-  for (const media of dragPanel.querySelectorAll("video,img")) {
+  for (const div of dragPanel.children) {
+    const media = div.firstElementChild;
     const style = media.style;
     style.width = `${offsetWidth}px`;
     style.height = `${offsetHeight}px`;
@@ -391,7 +392,8 @@ function freeOn() {
   if (sortable) {
     sortable.destroy();
     sortable = null;
-    for (const media of dragPanel.querySelectorAll("video,img")) {
+    for (const div of dragPanel.children) {
+      const media = div.firstElementChild;
       media.setAttribute("draggable", "false");
     }
     const minX = dragPanel.offsetLeft;
@@ -446,8 +448,10 @@ function gridOn() {
   draggables = [];
   let avgWidth = 0;
   let avgHeight = 0;
-  const medias = dragPanel.querySelectorAll("video,img");
-  for (const media of medias) {
+  const medias = [];
+  for (const div of dragPanel.children) {
+    const media = div.firstElementChild;
+    medias.push(media);
     avgWidth += media.offsetWidth;
     avgHeight += media.offsetHeight;
   }
@@ -563,7 +567,8 @@ const dragPanel = document.getElementById("dragPanel");
 const resizables = [];
 let draggables = [];
 let sortable = new Sortable(dragPanel);
-for (const media of dragPanel.querySelectorAll("video,img")) {
+for (const div of dragPanel.children) {
+  const media = div.firstElementChild;
   const resizable = new Resizable(media);
   media.addEventListener("resizeEnd", resizeAll);
   resizables.push(resizable);
