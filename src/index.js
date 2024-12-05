@@ -548,6 +548,8 @@ function addHTML() {
     div.prepend(container);
     div.style.overflow = "auto";
   }
+  const child = div.firstElementChild;
+  child.setAttribute("contenteditable", "true");
   if (getMode() === "grid") {
     const media = dragPanel.firstElementChild.firstElementChild;
     const mediaStyle = getComputedStyle(media);
