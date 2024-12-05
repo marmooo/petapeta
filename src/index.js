@@ -227,6 +227,7 @@ class Resizable {
       this.stopResize();
       return;
     }
+    this.element.style.overflow = "hidden";
     const { minSize, parentNode } = this.options;
     const dx = event.clientX - this.startX;
     const dy = event.clientY - this.startY;
@@ -248,6 +249,7 @@ class Resizable {
   };
 
   stopResize = () => {
+    this.element.style.overflow = "auto";
     if (!this.isResizing) return;
     this.isResizing = false;
     this.direction = null;
@@ -540,6 +542,7 @@ function addHTML() {
     div.prepend(container.firstElementChild);
   } else {
     div.prepend(container);
+    div.style.overflow = "auto";
   }
   if (getMode() === "grid") {
     const media = dragPanel.firstElementChild.firstElementChild;
