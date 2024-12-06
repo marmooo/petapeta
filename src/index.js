@@ -546,7 +546,7 @@ function addText(text) {
   const container = document.createElement("div");
   container.textContent = text;
   div.prepend(container);
-  div.style.overflow = "auto";
+  container.style.overflow = "auto";
   const child = div.firstElementChild;
   child.setAttribute("contenteditable", "true");
   if (getMode() === "grid") {
@@ -562,6 +562,7 @@ function addText(text) {
 
 function isMedia(node) {
   switch (node.tagName.toLowerCase()) {
+    case "iframe":
     case "img":
     case "svg":
     case "video":
@@ -577,11 +578,13 @@ function addHTMLText(text) {
   const div = template.firstElementChild;
   const container = document.createElement("div");
   container.innerHTML = text;
-  if (container.children.length === 1 && isMedia(container.firstElementChild)) {
-    div.prepend(container.firstElementChild);
+  const containerChild = container.firstElementChild;
+  if (container.children.length === 1 && isMedia(containerChild)) {
+    div.prepend(containerChild);
+    containerChild.style.overflow = "auto";
   } else {
     div.prepend(container);
-    div.style.overflow = "auto";
+    container.style.overflow = "auto";
   }
   const child = div.firstElementChild;
   child.setAttribute("contenteditable", "true");
