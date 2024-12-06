@@ -466,11 +466,15 @@ function gridOn() {
 }
 
 function addFile(file, event) {
-  switch (file.type.slice(0, 5)) {
-    case "image":
-      return addImageFile(file, event);
-    case "video":
-      return addVideoFile(file, event);
+  const type = file.type;
+  if (type.startsWith("image")) {
+    return addImageFile(file, event);
+  } else if (type.startsWith("video")) {
+    return addVideoFile(file, event);
+  } else if (type.startsWith("text/html")) {
+    return addHTMLFile(file, event);
+  } else if (type.startsWith("text")) {
+    return addText(file, event);
   }
 }
 
@@ -535,14 +539,45 @@ function addVideoFile(file, event) {
   setModeEvents(div, event);
 }
 
-function addHTML() {
+function addText(text) {
   const template = document.getElementById("sortable-box")
     .content.cloneNode(true);
   const div = template.firstElementChild;
-  const text = document.getElementById("addTextarea").value;
+  const container = document.createElement("div");
+  container.textContent = text;
+  div.prepend(container);
+  div.style.overflow = "auto";
+  const child = div.firstElementChild;
+  child.setAttribute("contenteditable", "true");
+  if (getMode() === "grid") {
+    const media = dragPanel.firstElementChild.firstElementChild;
+    const mediaStyle = getComputedStyle(media);
+    const style = div.firstElementChild.style;
+    style.width = mediaStyle.width;
+    style.height = mediaStyle.height;
+  }
+  dragPanel.appendChild(div);
+  setModeEvents(div);
+}
+
+function isMedia(node) {
+  switch (node.tagName.toLowerCase()) {
+    case "img":
+    case "svg":
+    case "video":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function addHTMLText(text) {
+  const template = document.getElementById("sortable-box")
+    .content.cloneNode(true);
+  const div = template.firstElementChild;
   const container = document.createElement("div");
   container.innerHTML = text;
-  if (container.children.length === 1) {
+  if (container.children.length === 1 && isMedia(container.firstElementChild)) {
     div.prepend(container.firstElementChild);
   } else {
     div.prepend(container);
@@ -559,6 +594,20 @@ function addHTML() {
   }
   dragPanel.appendChild(div);
   setModeEvents(div);
+}
+
+function addHTMLFile(file) {
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const text = event.target.result;
+    addHTML(text);
+  };
+  reader.readAsText(file);
+}
+
+function addHTMLfromTextArea() {
+  const text = document.getElementById("addTextarea").value;
+  addHTMLText(text);
 }
 
 function showAddModal() {
@@ -593,7 +642,7 @@ document.getElementById("showAddModal").onclick = showAddModal;
 document.getElementById("freeOff").onclick = freeOn;
 document.getElementById("dashboardOff").onclick = dashboardOn;
 document.getElementById("gridOff").onclick = gridOn;
-document.getElementById("addHTML").onclick = addHTML;
+document.getElementById("addHTML").onclick = addHTMLfromTextArea;
 globalThis.ondragover = (event) => {
   event.preventDefault();
 };
@@ -605,8 +654,26 @@ globalThis.ondrop = (event) => {
 };
 globalThis.addEventListener("paste", (event) => {
   if (event.target.tagName.toLowerCase() === "textarea") return;
-  for (const item of event.clipboardData.items) {
-    const file = item.getAsFile();
-    addFile(file, event);
+  const items = event.clipboardData.items;
+  if (items[0].kind === "string") {
+    const item = items[0];
+    const type = item.type;
+    item.getAsString((text) => {
+      console.log(type);
+      switch (type) {
+        case "text/html":
+          addHTMLText(text);
+          break;
+        default:
+          addText(text);
+          break;
+      }
+    });
+  } else {
+    for (const item of items) {
+      if (item.kind === "string") continue;
+      const file = item.getAsFile();
+      addFile(file, event);
+    }
   }
 });
