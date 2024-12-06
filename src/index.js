@@ -659,7 +659,6 @@ globalThis.addEventListener("paste", (event) => {
     const item = items[0];
     const type = item.type;
     item.getAsString((text) => {
-      console.log(type);
       switch (type) {
         case "text/html":
           addHTMLText(text);
