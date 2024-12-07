@@ -261,6 +261,8 @@ class Draggable {
   static defaultOptions = {
     offset: 10,
   };
+  static draggableElements = new Set();
+  static highestZIndex = 1;
 
   element;
   options = {};
@@ -273,6 +275,7 @@ class Draggable {
   constructor(element, options = {}) {
     this.element = element;
     this.options = { ...Draggable.defaultOptions, ...options };
+    Draggable.draggableElements.add(this.element);
     this.init();
   }
 
@@ -282,6 +285,10 @@ class Draggable {
     this.element.addEventListener("pointerdown", this.onPointerDown);
     this.element.addEventListener("pointermove", this.onPointerMove);
     this.element.addEventListener("pointerup", this.onPointerUp);
+    if (!this.element.style.zIndex) {
+      Draggable.highestZIndex += 1;
+      this.element.style.zIndex = Draggable.highestZIndex;
+    }
   }
 
   isInBorder(event) {
@@ -306,6 +313,8 @@ class Draggable {
       this.initialTop = this.element.offsetTop;
       this.element.setPointerCapture(event.pointerId);
       this.element.style.cursor = "grabbing";
+      Draggable.highestZIndex += 1;
+      this.element.style.zIndex = Draggable.highestZIndex;
     }
   };
 
@@ -330,6 +339,7 @@ class Draggable {
     this.element.removeEventListener("pointerdown", this.onPointerDown);
     this.element.removeEventListener("pointermove", this.onPointerMove);
     this.element.removeEventListener("pointerup", this.onPointerUp);
+    Draggable.draggableElements.delete(this.element);
     this.element.style = "";
   }
 }
