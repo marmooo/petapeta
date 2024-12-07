@@ -484,19 +484,19 @@ function addImageFile(file, event) {
   const div = template.firstElementChild;
   const img = document.createElement("img");
   img.setAttribute("alt", "");
+  img.setAttribute("draggable", "false");
+  const style = img.style;
+  style.objectFit = "contain";
   img.onload = () => {
     img.width = img.naturalWidth;
     img.height = img.naturalHeight;
-    img.setAttribute("draggable", "false");
     const maxWidth = dragPanel.offsetWidth / 2;
     if (getMode() === "grid") {
       const media = dragPanel.firstElementChild.firstElementChild;
       const mediaStyle = getComputedStyle(media);
-      const style = img.style;
       style.width = mediaStyle.width;
       style.height = mediaStyle.height;
     } else if (img.naturalWidth > maxWidth) {
-      const style = img.style;
       const height = img.naturalHeight / img.naturalWidth * maxWidth;
       style.width = `${maxWidth}px`;
       style.height = `${height}px`;
@@ -515,19 +515,19 @@ function addVideoFile(file, event) {
   const video = document.createElement("video");
   video.setAttribute("controls", true);
   video.setAttribute("preload", "metadata");
+  video.setAttribute("draggable", "false");
+  const style = video.style;
+  style.objectFit = "contain";
   video.onloadedmetadata = () => {
     video.width = video.videoWidth;
     video.height = video.videoHeight;
-    video.setAttribute("draggable", "false");
     const maxWidth = dragPanel.offsetWidth / 2;
     if (getMode() === "grid") {
       const media = dragPanel.firstElementChild.firstElementChild;
       const mediaStyle = getComputedStyle(media);
-      const style = video.style;
       style.width = mediaStyle.width;
       style.height = mediaStyle.height;
     } else if (video.videoWidth > maxWidth) {
-      const style = video.style;
       const height = video.videoHeight / video.videoWidth * maxWidth;
       style.width = `${maxWidth}px`;
       style.height = `${height}px`;
