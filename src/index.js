@@ -228,7 +228,7 @@ class Resizable {
       return;
     }
     this.element.style.overflow = "hidden";
-    const { minSize, parentNode } = this.options;
+    const { minSize, container } = this.options;
     const dx = event.clientX - this.startX;
     const dy = event.clientY - this.startY;
     const style = this.element.style;
@@ -240,11 +240,11 @@ class Resizable {
     }
     if (this.direction.includes("w")) {
       style.width = `${Math.max(minSize, this.startWidth - dx)}px`;
-      if (parentNode) parentNode.style.left = `${this.startLeft + dx}px`;
+      if (container) container.style.left = `${this.startLeft + dx}px`;
     }
     if (this.direction.includes("n")) {
       style.height = `${Math.max(minSize, this.startHeight - dy)}px`;
-      if (parentNode) parentNode.style.top = `${this.startTop + dy}px`;
+      if (container) container.style.top = `${this.startTop + dy}px`;
     }
   };
 
