@@ -1,4 +1,4 @@
-const CACHE_NAME = "2024-12-07 11:00";
+const CACHE_NAME = "2025-04-06 01:35";
 const urlsToCache = [
   "/petapeta/",
   "/petapeta/index.js",
