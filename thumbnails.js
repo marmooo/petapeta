@@ -1,5 +1,5 @@
 import { basename, extname, SEPARATOR } from "jsr:@std/path";
-import { $ } from "npm:zx@8.1.9";
+import { $ } from "npm:zx@8.5.2-lite";
 
 const inPath = Deno.args[0];
 const outDir = Deno.args[1];
