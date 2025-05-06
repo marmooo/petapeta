@@ -1,7 +1,7 @@
 import {
   Alert,
   Modal,
-} from "https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/+esm";
+} from "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/+esm";
 
 loadConfig();
 
