@@ -1,5 +1,6 @@
-import { basename, extname, SEPARATOR } from "jsr:@std/path";
-import { $ } from "npm:zx@8.5.2-lite";
+// deno-lint-ignore-file no-import-prefix
+import { basename, extname, SEPARATOR } from "jsr:@std/path@1";
+import { $ } from "npm:zx@8.5.5-lite";
 
 const inPath = Deno.args[0];
 const outDir = Deno.args[1];
