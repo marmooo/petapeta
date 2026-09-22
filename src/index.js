@@ -466,12 +466,34 @@ function gridOn() {
   }
 }
 
-function addFile(file, event) {
+// Same-origin apps (e.g. 動画管理ソフト / video-manager.html, when served
+// from this same host:port) can hand off a dragged File directly via
+// BroadcastChannel instead of native DataTransfer, which has proven unable
+// to carry a real File across tabs/windows in testing — independent of
+// whether the source used a FileSystemFileHandle or a plain File. The
+// visual drag/drop gesture stays native; only the payload moves out-of-band,
+// correlated to the drop by "did a drag-file/drag-url message arrive and
+// not yet get cleared by drag-end".
+let pendingDrag = null;
+if ("BroadcastChannel" in globalThis) {
+  const dragChannel = new BroadcastChannel("video-manager-drag");
+  dragChannel.onmessage = (event) => {
+    const data = event.data;
+    if (!data) return;
+    if (data.type === "drag-file" || data.type === "drag-url") {
+      pendingDrag = data;
+    } else if (data.type === "drag-end") {
+      pendingDrag = null;
+    }
+  };
+}
+
+function addFile(file, event, startTime) {
   const type = file.type;
   if (type.startsWith("image")) {
     return addImageFile(file, event);
   } else if (type.startsWith("video")) {
-    return addVideoFile(file, event);
+    return addVideoFile(file, event, startTime);
   } else if (type.startsWith("text/html")) {
     return addHTMLFile(file, event);
   } else if (type.startsWith("text")) {
@@ -509,7 +531,19 @@ function addImageFile(file, event) {
   setModeEvents(div, event);
 }
 
-function addVideoFile(file, event) {
+function addVideoFile(file, event, startTime) {
+  addVideoElement(URL.createObjectURL(file), event, startTime);
+}
+
+// URLから直接<video>を貼る版。video-manager.html側の「サムネイルをドラッグ」
+// 機能で、ローカルファイルの実体を持たないリモート動画(http/https URL)を
+// ドラッグしたときは、application/x-video-manager と text/uri-list だけが
+// 飛んでくる(items.add() で渡せる File が存在しないため)。それをここで拾う。
+function addVideoUrl(url, event, startTime) {
+  addVideoElement(url, event, startTime);
+}
+
+function addVideoElement(src, event, startTime) {
   const template = document.getElementById("sortable-box")
     .content.cloneNode(true);
   const div = template.firstElementChild;
@@ -522,6 +556,9 @@ function addVideoFile(file, event) {
   video.onloadedmetadata = () => {
     video.width = video.videoWidth;
     video.height = video.videoHeight;
+    if (startTime) {
+      video.currentTime = startTime;
+    }
     const maxWidth = dragPanel.offsetWidth / 2;
     if (getMode() === "grid") {
       const media = dragPanel.firstElementChild.firstElementChild;
@@ -534,7 +571,7 @@ function addVideoFile(file, event) {
       style.height = `${height}px`;
     }
   };
-  video.src = URL.createObjectURL(file);
+  video.src = src;
   div.prepend(video);
   dragPanel.appendChild(div);
   setModeEvents(div, event);
@@ -652,8 +689,54 @@ globalThis.ondragover = (event) => {
 };
 globalThis.ondrop = (event) => {
   event.preventDefault();
-  for (const file of event.dataTransfer.files) {
-    addFile(file, event);
+  // If the drop came from 動画管理ソフト (video-manager.html), it attaches a
+  // custom "application/x-video-manager" payload alongside the File that
+  // records which second of the video the dragged thumbnail represents.
+  // When present, seek the newly added <video> to that second; any other
+  // drag source (Explorer/Finder, another tab, etc.) simply won't set this,
+  // and playback starts from 0 as before.
+  let startTime;
+  const custom = event.dataTransfer.getData("application/x-video-manager");
+  if (custom) {
+    try {
+      const info = JSON.parse(custom);
+      if (typeof info.time === "number" && isFinite(info.time)) {
+        startTime = info.time;
+      }
+    } catch (_) {
+      // ignore malformed/foreign payloads
+    }
+  }
+  const files = event.dataTransfer.files;
+  if (files.length > 0) {
+    for (const file of files) {
+      addFile(file, event, startTime);
+    }
+    return;
+  }
+  // Native DataTransfer carried no File (this is the common case for a
+  // cross-tab drag in testing) — fall back to whatever arrived out-of-band
+  // via BroadcastChannel for this same drag gesture, if same-origin.
+  if (pendingDrag) {
+    const drag = pendingDrag;
+    pendingDrag = null;
+    if (drag.type === "drag-file" && drag.file) {
+      addFile(drag.file, event, drag.time);
+      return;
+    }
+    if (drag.type === "drag-url" && drag.url) {
+      addVideoUrl(drag.url, event, drag.time);
+      return;
+    }
+  }
+  // Last resort: a plain dragged link/URL (no BroadcastChannel available,
+  // or a source other than 動画管理ソフト), e.g. 動画管理ソフト is showing a
+  // remote (http/https-hosted) video: it has no local file to hand over via
+  // items.add(), only the URL itself, sent as text/uri-list / text/plain.
+  const uri = (event.dataTransfer.getData("text/uri-list") ||
+    event.dataTransfer.getData("text/plain") || "").trim();
+  if (/^https?:\/\//i.test(uri)) {
+    addVideoUrl(uri, event, startTime);
   }
 };
 globalThis.addEventListener("paste", (event) => {
