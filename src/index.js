@@ -12,6 +12,12 @@ function toggleDarkMode() {
   localStorage.setItem("darkMode", newTheme);
 }
 
+function changeLang() {
+  const langObj = document.getElementById("lang");
+  const lang = langObj.options[langObj.selectedIndex].value;
+  location.href = `/petapeta/${lang}/`;
+}
+
 class Sortable {
   static defaultOptions = {
     offset: 10,
@@ -679,6 +685,7 @@ document.getElementById("addModal").addEventListener("shown.bs.modal", () => {
 });
 
 document.getElementById("toggleDarkMode").onclick = toggleDarkMode;
+document.getElementById("lang").onclick = changeLang;
 document.getElementById("showAddModal").onclick = showAddModal;
 document.getElementById("freeOff").onclick = freeOn;
 document.getElementById("dashboardOff").onclick = dashboardOn;

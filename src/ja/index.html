@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head prefix="og: http://ogp.me/ns#">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Paste videos and images anywhere on the screen and watch as many of them at once as you like.">
-    <title>Petapeta</title>
-    <meta property="og:title" content="petapeta">
-    <meta property="og:site_name" content="petapeta">
-    <meta property="og:description" content="Paste videos and images anywhere on the screen and watch as many of them at once as you like.">
+    <meta name="description" content="動画も画像も、ドラッグ&amp;ドロップでぺたぺた貼るだけ。何十個でも画面に並べて同時再生できます。">
+    <title>ぺたぺた</title>
+    <meta property="og:title" content="ぺたぺた">
+    <meta property="og:site_name" content="ぺたぺた">
+    <meta property="og:description" content="動画も画像も、ドラッグ&amp;ドロップでぺたぺた貼るだけ。何十個でも画面に並べて同時再生できます。">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://marmooo.github.io/petapeta/en/">
+    <meta property="og:url" content="https://marmooo.github.io/petapeta/">
     <meta property="og:image" content="https://marmooo.github.io/petapeta/favicon/apple-touch-icon.png">
     <meta name="twitter:card" content="summary">
     <script>
@@ -84,15 +84,15 @@
       <nav class="navbar navbar-expand px-3 flex-wrap">
         <a class="navbar-brand" href="/petapeta/">
           <img class="favicon" alt="" src="/petapeta/favicon/favicon.svg" width="32" height="32">
-          Petapeta
+          ぺたぺた
         </a>
         <div class="navbar-nav ms-auto align-items-center gap-1">
-          <button id="showAddModal" title="Add item" type="button" class="btn p-0">
+          <button id="showAddModal" title="要素を追加" type="button" class="btn p-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
               <path d="M453-280h60v-166h167v-60H513v-174h-60v174H280v60h173v166Zm27.27 200q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"></path>
             </svg>
           </button>
-          <button title="Free placement" class="btn p-0" type="button">
+          <button title="自由配置" class="btn p-0" type="button">
             <svg id="freeOn" class="d-none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" fill="currentColor">
               <path d="M820-368v-324H244v-188h636v512h-60ZM80-80v-552h680v552H80Z"></path>
             </svg>
@@ -100,7 +100,7 @@
               <path d="M140-140h516v-392H140v392Zm576-228v-60h104v-392H304v228h-60v-288h636v512H716ZM80-80v-512h636v512H80Zm482-617ZM398-336Z"></path>
             </svg>
           </button>
-          <button title="Dashboard" class="btn p-0" type="button">
+          <button title="ダッシュボード" class="btn p-0" type="button">
             <svg id="dashboardOn" class="d-none" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
               <path d="M570-160v-290h310v290H570ZM450-510v-290h430v290H450ZM80-160v-290h430v290H80Zm0-350v-290h310v290H80Z"></path>
             </svg>
@@ -108,7 +108,7 @@
               <path d="M570-160v-290h310v290H570ZM450-510v-290h430v290H450ZM80-160v-290h430v290H80Zm0-350v-290h310v290H80Zm430-60h310v-170H510v170ZM140-220h310v-170H140v170Zm490 0h190v-170H630v170ZM140-570h190v-170H140v170Zm370 0Zm-60 180Zm180 0ZM330-570Z"></path>
             </svg>
           </button>
-          <button title="Grid" class="btn p-0" type="button">
+          <button title="グリッド" class="btn p-0" type="button">
             <svg id="gridOff" class="d-none" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
               <path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"></path>
             </svg>
@@ -120,16 +120,16 @@
             <option value="ja">日本語</option>
             <option value="en" selected>English</option>
           </select>
-          <button title="Toggle dark mode" id="toggleDarkMode" class="fs-4 btn p-0" type="button">🌓</button>
+          <button title="ダークモード切替" id="toggleDarkMode" class="fs-4 btn p-0" type="button">🌓</button>
         </div>
       </nav>
     </header>
     <main class="container-fluid text-center">
       <noscript>
-        <div class="alert alert-warning">Please enable JavaScript.</div>
+        <div class="alert alert-warning">JavaScript を ON にしてください</div>
       </noscript>
       <div class="alert alert-info alert-dismissible fade show" role="alert">
-        Drag &amp; drop video or image files here.
+        動画・画像ファイルをドラッグ &amp; ドロップしてください。
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
       <div id="dragPanel" class="bg-light-subtle text-start">
@@ -137,7 +137,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455347-320x180.webp" draggable="false">
             <source src="/petapeta/video/455347-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -147,7 +147,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455343-320x180.webp" draggable="false">
             <source src="/petapeta/video/455343-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -157,7 +157,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455363-320x180.webp" draggable="false">
             <source src="/petapeta/video/455363-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -167,7 +167,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455155-320x180.webp" draggable="false">
             <source src="/petapeta/video/455155-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -177,7 +177,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455188-320x180.webp" draggable="false">
             <source src="/petapeta/video/455188-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -187,7 +187,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455378-320x180.webp" draggable="false">
             <source src="/petapeta/video/455378-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -197,7 +197,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455211-320x180.webp" draggable="false">
             <source src="/petapeta/video/455211-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -207,7 +207,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455282-320x180.webp" draggable="false">
             <source src="/petapeta/video/455282-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -217,7 +217,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455349-320x180.webp" draggable="false">
             <source src="/petapeta/video/455349-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -227,7 +227,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455326-320x180.webp" draggable="false">
             <source src="/petapeta/video/455326-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -237,7 +237,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455167-320x180.webp" draggable="false">
             <source src="/petapeta/video/455167-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -247,7 +247,7 @@
           <video controls width="320" height="180" preload="none" poster="/petapeta/video/455390-320x180.webp" draggable="false">
             <source src="/petapeta/video/455390-320x180.mp4" type="video/mp4">
           </video>
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -256,7 +256,7 @@
       </div>
       <template id="sortable-box">
         <div class="sortable-box">
-          <button title="Close" class="close" type="button">
+          <button title="閉じる" class="close" type="button">
             <svg width="24" height="24" fill="white">
               <use href="#icon-close"></use>
             </svg>
@@ -267,15 +267,15 @@
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="addModalLabel">Add item</h5>
+              <h5 class="modal-title" id="addModalLabel">要素を追加</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <textarea id="addTextarea" class="form-control" placeholder="Paste HTML here to add an SVG, a YouTube embed, or similar."></textarea>
+              <textarea id="addTextarea" class="form-control" placeholder="HTML を入力すると SVG や YouTube 動画を追加できます。"></textarea>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button id="addHTML" type="button" class="btn btn-primary">Add</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+              <button id="addHTML" type="button" class="btn btn-primary">追加</button>
             </div>
           </div>
         </div>
